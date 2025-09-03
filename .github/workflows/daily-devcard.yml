@@ -1,0 +1,32 @@
+name: Update daily.dev DevCard
+
+on:
+  schedule:
+    # Runs every day at 2am UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  devcard:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Update DevCard
+        uses: dailydotdev/action-devcard@master
+        with:
+          user_id: jTIRR1cyKUbxDqSJuIGSb
+          
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update daily.dev DevCard"
+          git push
